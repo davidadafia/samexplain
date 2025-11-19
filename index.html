@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>School ChatBot - Every Line Explained</title>
+  <style>
+    :root{--bg:#07070a;--panel:#0f1113;--muted:#98a4ae;--accent:#5cc8ff;--radius:16px;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;background:linear-gradient(180deg,var(--bg),#040506);color:#e8f1fb}
+    header{display:flex;align-items:center;gap:16px;padding:28px 36px;border-bottom:1px solid rgba(255,255,255,0.02)}
+    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,#0ea5ff,#6ee7b7);display:flex;align-items:center;justify-content:center}
+    .brand h1{font-size:18px;margin:0}
+    .brand p{margin:0;color:var(--muted);font-size:13px}
+    .container{
+      display:grid;grid-template-columns:280px 1.3fr 1fr;gap:24px;
+      padding:20px 32px;height:calc(100vh - 100px);
+    }
+    .sidebar{background:var(--panel);border-radius:var(--radius);padding:24px;border:1px solid rgba(255,255,255,0.03);overflow-y:auto}
+    .sidebar h3{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:16px}
+    .nav button{width:100%;text-align:left;padding:13px 16px;border-radius:10px;border:none;background:transparent;color:#dff5ff;cursor:pointer;transition:.25s;font-weight:500}
+    .nav button:hover{background:rgba(92,200,255,0.12)}
+    .nav button.active{background:linear-gradient(90deg,rgba(92,200,255,0.22),transparent);color:white;box-shadow:0 8px 24px rgba(9,64,94,0.25)}
+    .code-panel{background:#071022;border-radius:var(--radius);padding:20px;border:1px solid rgba(255,255,255,0.06);overflow:hidden;display:flex;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,0.5)}
+    .code-header{font-size:14px;color:var(--accent);margin-bottom:12px;font-weight:600}
+    #codeblock{flex:1;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;line-height:1.65}
+    .line{display:flex;padding:7px 9px;border-radius:8px;cursor:pointer;transition:.2s;align-items:baseline}
+    .line:hover{background:rgba(255,255,255,0.045)}
+    .line.highlighted{background:linear-gradient(90deg,rgba(92,200,255,0.2),rgba(92,200,255,0.06));border-left:4px solid #5cc8ff !important}
+    .ln{width:52px;text-align:right;padding-right:16px;color:#64748b;user-select:none;font-variant-numeric:tabular-nums}
+    .code{flex:1;color:#e2e8f0}
+    .explain-panel{background:linear-gradient(135deg,rgba(12,162,255,0.14),rgba(102,77,255,0.1));border:1px solid rgba(92,200,255,0.35);border-radius:var(--radius);padding:28px;overflow-y:auto;box-shadow:0 12px 40px rgba(0,0,0,0.5)}
+    .explain-panel h3{font-size:21px;margin-bottom:16px;background:linear-gradient(90deg,#5cc8ff,#a78bff,#ff6bcf);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
+    .explain-panel p{font-size:15.5px;line-height:1.85;color:#e0f2ff;margin-bottom:16px}
+    .tip{margin-top:24px;padding:18px;background:rgba(255,255,255,0.08);border-radius:12px;border-left:5px solid #a78bff;font-size:14.5px;color:#c8d7ff}
+    .footer{padding:16px;text-align:center;color:var(--muted);font-size:13px}
+    @media(max-width:1200px){.container{grid-template-columns:250px 1fr}}
+    @media(max-width:900px){.container{grid-template-columns:1fr;padding:16px}.sidebar,.explain-panel{display:none}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo" aria-hidden="true">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="6" fill="white" fill-opacity="0.08"/></svg>
+    </div>
+    <div class="brand">
+      <h1>School Chatbot Explained</h1>
+      <p>Every meaningful line explained in detail</p>
+    </div>
+  </header>
+  <div class="container">
+    <aside class="sidebar">
+      <h3>Jump to Section</h3>
+      <ul class="nav">
+        <li><button class="active" data-target="imports">📦 Imports & Setup</button></li>
+        <li><button data-target="dotenv">🌱 Environment Variables</button></li>
+        <li><button data-target="app">⚡ Flask App Creation</button></li>
+        <li><button data-target="config">⚙️ Gemini Config</button></li>
+        <li><button data-target="instruction">🧠 System Instruction</button></li>
+        <li><button data-target="storage">💾 Session Storage</button></li>
+        <li><button data-target="formatting">✨ Response Formatting</button></li>
+        <li><button data-target="api">🌐 Gemini API Call</button></li>
+        <li><button data-target="routes">🛤️ All Routes</button></li>
+        <li><button data-target="run">🚀 Run Server</button></li>
+      </ul>
+    </aside>
+    <section class="code-panel">
+      <div class="code-header">app.py — Click any code line for detailed beginner explanation →</div>
+      <pre id="codeblock" tabindex="0"></pre>
+    </section>
+    <aside class="explain-panel" id="explain">
+      <div class="tip">💡 Beginner tip: Start from line 1 and work your way down! Use the left sidebar to jump between major sections when you're ready.</div>
+      <p id="explainText">Click any line in the code to see a detailed, beginner-friendly explanation here.</p>
+    </aside>
+  </div>
+  <div class="footer">Line-by-Line Interactive Explainer for school chatbot. All The Best.</div>
+  <script>
+    const fullSource = `import time
+from flask import Flask, render_template, request, jsonify
+from dotenv import load_dotenv
+import os
+import requests
+import json
+from uuid import uuid4
+
+load_dotenv()
+
+app = Flask(__name__)
+
+GEMINI_MODEL = "gemini-1.5-flash-preview-0925"
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
+if not GEMINI_API_KEY:
+    print("⚠️ WARNING: GEMINI_API_KEY not found. Please set it in your .env file.")
+
+SCHOOL_INTERNAL_DATA_INSTRUCTION = """
+You are an intelligent, helpful chatbot representing the Lincoln Community School.
+Your primary function is to answer questions based ONLY on the following internal school data.
+Do not invent information. If the user asks something outside this data, politely say you don't have that info.
+When appropriate, you can use the google_search tool to find current information.
+
+INTERNAL SCHOOL DATA:
+- School Name: Lincoln Community School
+- Location: 123 Education Ave, Springfield
+- Principal: Dr. Maria Rodriguez
+- Grades: K-12
+- Student Population: 850 students
+- School Hours: 8:00 AM - 3:30 PM Monday-Friday
+- Contact: (555) 123-4567 | info@lincolnschool.edu
+- Mission: Fostering excellence, curiosity, and community
+"""
+
+conversations = {}
+
+def format_response(text):
+    """Converts plain text into beautiful, readable HTML with proper formatting"""
+    if not text:
+        return "<p>No response generated.</p>"
+    
+    lines = text.split('\\n')
+    formatted_html = ""
+    in_list = False
+    
+    for line in lines:
+        line = line.strip()
+        
+        if not line:
+            if in_list:
+                formatted_html += "</ul>"
+                in_list = False
+            continue
+        
+        if line.startswith('**') and line.endswith('**'):
+            formatted_html += f"<h3>{line.strip('*')}</h3>"
+        elif line.startswith('- ') or line.startswith('* '):
+            if not in_list:
+                formatted_html += "<ul>"
+                in_list = True
+            formatted_html += f"<li>{line[2:]}</li>"
+        else:
+            if in_list:
+                formatted_html += "</ul>"
+                in_list = False
+            formatted_html += f"<p>{line}</p>"
+    
+    if in_list:
+        formatted_html += "</ul>"
+    
+    return formatted_html
+
+def call_gemini_api(messages):
+    """Calls the Gemini API with retry logic for reliability"""
+    if not GEMINI_API_KEY:
+        return "API key is missing. Please check your .env file.", []
+    
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
+    headers = {"Content-Type": "application/json"}
+    
+    contents = []
+    for msg in messages:
+        contents.append({
+            "role": "user" if msg["role"] == "user" else "model",
+            "parts": [{"text": msg["content"]}]
+        })
+    
+    payload = {
+        "contents": contents,
+        "systemInstruction": {"parts": [{"text": SCHOOL_INTERNAL_DATA_INSTRUCTION}]}
+    }
+    
+    for attempt in range(3):
+        try:
+            response = requests.post(f"{url}?key={GEMINI_API_KEY}", headers=headers, json=payload, timeout=30)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if "candidates" in data and len(data["candidates"]) > 0:
+                    reply_text = data["candidates"][0]["content"]["parts"][0]["text"]
+                    return reply_text, contents
+                return "No response generated.", contents
+            elif response.status_code == 429:
+                time.sleep(2 ** attempt)
+                continue
+            else:
+                return f"API error: {response.status_code}", contents
+        except Exception as e:
+            if attempt < 2:
+                time.sleep(1)
+            else:
+                return f"Error: {str(e)}", contents
+    
+    return "Failed after 3 attempts.", contents
+
+@app.route('/')
+def home():
+    session_id = str(uuid4())
+    return render_template('index.html', session_id=session_id)
+
+@app.route('/chat', methods=['POST'])
+def chat():
+    data = request.get_json()
+    user_message = data.get('message', '').strip()
+    session_id = data.get('session_id', 'default')
+    
+    if not user_message:
+        return jsonify({'error': 'Message is required'}), 400
+    
+    if session_id not in conversations:
+        conversations[session_id] = []
+    
+    conversations[session_id].append({"role": "user", "content": user_message})
+    
+    reply_text, updated_history = call_gemini_api(conversations[session_id])
+    
+    conversations[session_id].append({"role": "assistant", "content": reply_text})
+    
+    formatted_reply = format_response(reply_text)
+    
+    return jsonify({'reply': formatted_reply})
+
+@app.route('/reset', methods=['POST'])
+def reset():
+    data = request.get_json()
+    session_id = data.get('session_id', 'default')
+    
+    if session_id in conversations:
+        conversations[session_id] = []
+    
+    return jsonify({'status': 'success', 'message': 'Conversation reset'})
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)`.trim();
+
+    const lines = fullSource.split('\n');
+    const codeblock = document.getElementById('codeblock');
+    codeblock.innerHTML = lines.map((line, i) => {
+      const num = (i + 1).toString().padStart(3, ' ');
+      const content = line || ' ';
+      return `<div class="line" data-line="${i+1}">
+        <div class="ln">${num}</div>
+        <div class="code">${escapeHtml(content)}</div>
+      </div>`;
+    }).join('');
+
+    const explanations = {
+      1: `<h3>📦 import time</h3><p><strong>What it does:</strong> Brings in Python's built-in <code>time</code> module, which gives you tools to work with time-related functions.</p><p><strong>Why we need it:</strong> Later in the code, we use <code>time.sleep()</code> to pause the program for a few seconds. This is helpful when the Gemini API is busy and we need to wait before trying again.</p><p><strong>Beginner tip:</strong> Think of "importing" like adding tools to your toolbox. Python has many built-in modules (like <code>time</code>) that you can import when needed!</p>`,
+      
+      2: `<h3>📦 from flask import Flask, render_template, request, jsonify</h3><p><strong>What it does:</strong> Imports four essential components from the Flask web framework.</p><p><strong>Breaking it down:</strong></p><ul><li><code>Flask</code> - The main application class that creates your web server</li><li><code>render_template</code> - Function to display HTML pages to users</li><li><code>request</code> - Object that contains data sent by the user (like form submissions)</li><li><code>jsonify</code> - Converts Python dictionaries into JSON format for API responses</li></ul><p><strong>Why Flask?</strong> Flask is a lightweight, beginner-friendly framework for building web applications in Python. It handles all the complex networking stuff so you can focus on your app's logic!</p>`,
+      
+      3: `<h3>🌱 from dotenv import load_dotenv</h3><p><strong>What it does:</strong> Imports the <code>load_dotenv</code> function from a package called <code>python-dotenv</code>.</p><p><strong>Why we need it:</strong> This allows us to store secret information (like API keys) in a special file called <code>.env</code> instead of putting them directly in our code.</p><p><strong>Security benefit:</strong> When you share your code on GitHub, you DON'T share the .env file, so your secrets stay safe! This is a professional best practice that all developers use.</p><p><strong>Installation note:</strong> You need to install this with <code>pip install python-dotenv</code> before using it.</p>`,
+      
+      4: `<h3>💻 import os</h3><p><strong>What it does:</strong> Imports the <code>os</code> module, which provides functions to interact with your operating system.</p><p><strong>Why we need it:</strong> We use <code>os.getenv()</code> to read environment variables (like our secret API key) that were loaded from the .env file.</p><p><strong>Fun fact:</strong> The <code>os</code> module works on Windows, Mac, and Linux - it automatically adapts to whatever system you're running on!</p>`,
+      
+      5: `<h3>🌐 import requests</h3><p><strong>What it does:</strong> Imports the <code>requests</code> library, the most popular Python package for making HTTP requests.</p><p><strong>Why we need it:</strong> To communicate with Google's Gemini API over the internet. We'll send user messages to Gemini and receive AI-generated responses back.</p><p><strong>What's an HTTP request?</strong> It's like sending a letter to a website. You send data (the letter), and the website sends data back (the response).</p><p><strong>Installation note:</strong> Install with <code>pip install requests</code></p>`,
+      
+      6: `<h3>📋 import json</h3><p><strong>What it does:</strong> Imports Python's built-in JSON module for working with JSON data.</p><p><strong>What's JSON?</strong> JSON (JavaScript Object Notation) is a standard format for sending data between computers. It looks like Python dictionaries: <code>{"name": "Alice", "age": 25}</code></p><p><strong>Why we need it:</strong> The Gemini API expects data in JSON format, and sends responses back in JSON. This module helps us convert between Python objects and JSON.</p><p><strong>Cool fact:</strong> Almost every modern API uses JSON because it's simple, readable, and works with any programming language!</p>`,
+      
+      7: `<h3>🆔 from uuid import uuid4</h3><p><strong>What it does:</strong> Imports the <code>uuid4</code> function, which generates unique identifiers.</p><p><strong>Why we need it:</strong> Every user who visits our chatbot gets a unique session ID (like "a7b2c3d4-e5f6-1234-5678-90abcdef1234"). This helps us keep track of each user's conversation separately.</p><p><strong>What's a UUID?</strong> Universal Unique IDentifier - a 128-bit number that's virtually guaranteed to be unique. Even if you generate a billion UUIDs, you won't get duplicates!</p><p><strong>Real-world use:</strong> UUIDs are used everywhere - database records, file names, user sessions, etc.</p>`,
+      
+      8: `<p><em>Empty line for readability - no explanation needed.</em></p>`,
+      
+      9: `<h3>🔧 load_dotenv()</h3><p><strong>What it does:</strong> This function reads your <code>.env</code> file and loads all the variables into Python's environment.</p><p><strong>When it runs:</strong> This happens immediately when your program starts, before anything else.</p><p><strong>What's in .env?</strong> Your .env file might look like this:<br><code>GEMINI_API_KEY=AIzaSyAbCd1234...</code></p><p><strong>Important:</strong> After this line runs, you can access your API key with <code>os.getenv("GEMINI_API_KEY")</code></p><p><strong>Best practice:</strong> Always call <code>load_dotenv()</code> near the top of your file, before trying to access any environment variables!</p>`,
+      
+      10: `<p><em>Empty line for code organization - no explanation needed.</em></p>`,
+      
+      11: `<h3>⚡ app = Flask(__name__)</h3><p><strong>What it does:</strong> Creates your Flask application instance - this is the heart of your web server!</p><p><strong>Breaking it down:</strong></p><ul><li><code>app</code> - The variable name for your application (you'll use this a lot)</li><li><code>Flask(__name__)</code> - Creates a new Flask app. The <code>__name__</code> tells Flask the name of the current module</li></ul><p><strong>Why __name__?</strong> Flask uses this to figure out where to look for templates, static files, and other resources. It's like giving Flask a map of your project!</p><p><strong>Important:</strong> You only create ONE Flask app per file. All your routes and functions will attach to this <code>app</code> object.</p>`,
+      
+      12: `<p><em>Empty line separating setup from configuration - no explanation needed.</em></p>`,
+      
+      13: `<h3>⚙️ GEMINI_MODEL = "gemini-1.5-flash-preview-0925"</h3><p><strong>What it does:</strong> Stores the name of the specific Gemini AI model we want to use.</p><p><strong>Why this model?</strong> "Flash" models are optimized for speed and cost-efficiency, perfect for chatbots that need quick responses!</p><p><strong>Other options:</strong> Google offers different models like:<ul><li><code>gemini-pro</code> - More powerful but slower and more expensive</li><li><code>gemini-flash</code> - Fast and cheap (what we're using!)</li></ul></p><p><strong>Naming convention:</strong> ALL_CAPS means this is a constant - a value that won't change during the program. Python convention!</p>`,
+      
+      14: `<h3>🔑 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")</h3><p><strong>What it does:</strong> Retrieves your secret Gemini API key from environment variables and stores it in a variable.</p><p><strong>How it works:</strong> <code>os.getenv("NAME")</code> looks for a variable called NAME in your environment (loaded from .env file earlier) and returns its value.</p><p><strong>Security note:</strong> NEVER write your API key directly in code like <code>API_KEY = "abc123"</code>. Anyone who sees your code would steal your key! Always use environment variables.</p><p><strong>Getting your key:</strong> You get this from Google AI Studio (aistudio.google.com) after creating an account.</p>`,
+      
+      15: `<p><em>Empty line before conditional check - no explanation needed.</em></p>`,
+      
+      16: `<h3>✅ if not GEMINI_API_KEY:</h3><p><strong>What it does:</strong> Checks if the API key is missing (None or empty string).</p><p><strong>Why check?</strong> If someone forgets to create a .env file or misspells the variable name, the API key will be <code>None</code>. We want to catch this early and show a helpful error!</p><p><strong>The "not" operator:</strong> This means "if the API key is NOT set" or "if it's missing/empty".</p><p><strong>Good practice:</strong> Always validate your configuration early in the program. It's better to show a clear error message than to crash mysteriously later!</p>`,
+      
+      17: `<h3>⚠️ print("⚠️ WARNING: GEMINI_API_KEY not found...")</h3><p><strong>What it does:</strong> Prints a helpful warning message to the terminal/console if the API key is missing.</p><p><strong>Why the emoji?</strong> The ⚠️ emoji makes the warning stand out visually in your terminal - much easier to spot!</p><p><strong>What happens next?</strong> The program continues running, but API calls will fail. In a production app, you might want to stop the program here with <code>sys.exit()</code>.</p><p><strong>Indentation matters:</strong> This line is indented 4 spaces because it's inside the <code>if</code> block. Python uses indentation to group code together!</p>`,
+      
+      18: `<p><em>Empty line after configuration section - no explanation needed.</em></p>`,
+      
+      19: `<h3>📝 SCHOOL_INTERNAL_DATA_INSTRUCTION = """</h3><p><strong>What it does:</strong> Starts a multi-line string that will contain the AI's "system instruction" - its personality and knowledge base.</p><p><strong>Triple quotes:</strong> The <code>"""</code> syntax lets you write strings that span multiple lines. Everything until the closing <code>"""</code> is part of the string.</p><p><strong>What's a system instruction?</strong> It's like giving the AI a job description and training manual. You tell it:<ul><li>Who it is (a school chatbot)</li><li>What it knows (school information)</li><li>How to behave (polite, helpful)</li><li>What not to do (don't make up information)</li></ul></p><p><strong>Pro tip:</strong> The system instruction is the most important part of your chatbot - it determines personality and accuracy!</p>`,
+      
+      20: `<p><strong>System instruction line 1:</strong> This line and the next several are all part of the multi-line string containing your AI's instructions. Each line tells the AI how to behave and what information it has access to.</p>`,
+      21: `<p><strong>System instruction line 2:</strong> Part of the AI's core instructions about its role and capabilities.</p>`,
+      22: `<p><strong>System instruction line 3:</strong> Continuing the system prompt that defines the AI's behavior.</p>`,
+      23: `<p><strong>System instruction line 4:</strong> More details about how the AI should respond to users.</p>`,
+      24: `<p><strong>Empty line in system instruction:</strong> Blank lines within the instruction help organize sections for readability.</p>`,
+      25: `<p><strong>Internal data section:</strong> This introduces the actual school data that the AI can reference.</p>`,
+      26: `<p><strong>School name:</strong> Tells the AI the official name of the school it represents.</p>`,
+      27: `<p><strong>School location:</strong> Provides the address so the AI can answer location questions.</p>`,
+      28: `<p><strong>Principal's name:</strong> Gives the AI information about school leadership.</p>`,
+      29: `<p><strong>Grade levels:</strong> Tells the AI what grades the school serves (Kindergarten through 12th grade).</p>`,
+      30: `<p><strong>Student population:</strong> The total number of students, useful for answering capacity questions.</p>`,
+      31: `<p><strong>School hours:</strong> Operating hours so the AI can tell parents when school is in session.</p>`,
+      32: `<p><strong>Contact information:</strong> Phone and email for the AI to provide to users.</p>`,
+      33: `<p><strong>Mission statement:</strong> The school's values and educational philosophy.</p>`,
+      34: `<h3>📝 """</h3><p><strong>What it does:</strong> Closes the multi-line string that started on line 19.</p><p><strong>Complete package:</strong> Everything between the opening <code>"""</code> and this closing <code>"""</code> is now stored in the variable <code>SCHOOL_INTERNAL_DATA_INSTRUCTION</code>.</p><p><strong>How it's used:</strong> Later, when we call the Gemini API, we'll send this entire instruction along with every request. This ensures the AI always remembers its role and the school information!</p>`,
+      35: `<p><em>Empty line separating configuration from storage section - no explanation needed.</em></p>`,
+      
+      36: `<h3>💾 conversations = {}</h3><p><strong>What it does:</strong> Creates an empty dictionary to store all user conversations.</p><p><strong>What's a dictionary?</strong> A Python data structure that stores key-value pairs, like a real dictionary stores words and definitions. Format: <code>{"key": "value"}</code></p><p><strong>How we use it:</strong> Each user gets a unique session ID (the key), and their message history is the value (a list of messages).</p><p><strong>Example:</strong> After a few messages, it might look like:<br><code>{"abc-123": [{"role": "user", "content": "Hello"}, {"role": "assistant", "content": "Hi there!"}]}</code></p><p><strong>Important limitation:</strong> This stores data in memory only. If you restart the server, all conversations are lost! For production apps, use a database like PostgreSQL or Redis.</p>`,
+      
+      37: `<p><em>Empty line before function definition - no explanation needed.</em></p>`,
+      
+      38: `<h3>✨ def format_response(text):</h3><p><strong>What it does:</strong> Defines a function that converts plain text from the AI into beautiful, formatted HTML.</p><p><strong>What's a function?</strong> A reusable block of code that performs a specific task. You write it once and can call it many times!</p><p><strong>The parameter:</strong> <code>text</code> - the raw text response from Gemini AI that we want to format.</p><p><strong>Why we need this:</strong> Gemini returns plain text like "** Heading **\\nSome text\\n- List item". We need to convert that into proper HTML with <code>&lt;h3&gt;</code>, <code>&lt;p&gt;</code>, <code>&lt;ul&gt;</code> tags so it looks good in the browser!</p>`,
+      
+      39: `<h3>📖 """Converts plain text into beautiful, readable HTML..."""</h3><p><strong>What it does:</strong> This is a "docstring" - a special comment that describes what the function does.</p><p><strong>Why docstrings?</strong> They serve as built-in documentation. When someone (including future you!) reads your code, they can instantly understand what each function does.</p><p><strong>Best practice:</strong> Always write docstrings for your functions! Good code is self-documenting.</p><p><strong>How to access it:</strong> You can read any function's docstring by typing <code>help(format_response)</code> in Python!</p>`,
+      
+      40: `<h3>🛡️ if not text:</h3><p><strong>What it does:</strong> Checks if the input text is empty or None before trying to process it.</p><p><strong>Why check?</strong> If something goes wrong with the API and we get no response, we don't want the function to crash. This is called "defensive programming".</p><p><strong>What qualifies as "not text"?</strong> These all trigger this condition:<ul><li><code>None</code></li><li>Empty string: <code>""</code></li><li>Only whitespace: <code>"   "</code></li></ul></p>`,
+
+      41: `<h3>↩️ return "&lt;p&gt;No response generated.&lt;/p&gt;"</h3><p><strong>What it does:</strong> Returns a friendly HTML error message if there's no text to format.</p><p><strong>The return statement:</strong> Immediately exits the function and sends this value back to whoever called the function.</p><p><strong>Why HTML?</strong> We're returning HTML because that's what the browser needs to display. The <code>&lt;p&gt;</code> tags create a paragraph.</p>`,
+      
+      42: `<p><em>Empty line for readability - no explanation needed.</em></p>`,
+      
+      43: `<h3>✂️ lines = text.split('\\n')</h3><p><strong>What it does:</strong> Splits the text into a list of individual lines.</p><p><strong>How split() works:</strong> Takes a string and breaks it wherever it finds the separator (here: <code>\\n</code> which means "newline").</p><p><strong>Example:</strong> <code>"Hello\\nWorld"</code> becomes <code>["Hello", "World"]</code></p><p><strong>Why we need this:</strong> We want to process each line separately to detect headings, bullet points, etc.</p>`,
+      
+      44: `<h3>📝 formatted_html = ""</h3><p><strong>What it does:</strong> Creates an empty string that we'll gradually build up with HTML.</p><p><strong>The technique:</strong> We start with nothing and keep adding pieces. This is called "string concatenation".</p><p><strong>Example flow:</strong> <code>""</code> → <code>"&lt;h3&gt;Title&lt;/h3&gt;"</code> → <code>"&lt;h3&gt;Title&lt;/h3&gt;&lt;p&gt;Text&lt;/p&gt;"</code></p>`,
+      
+      45: `<h3>🚩 in_list = False</h3><p><strong>What it does:</strong> Creates a flag variable to track whether we're currently inside a bulleted list.</p><p><strong>Why we need it:</strong> HTML lists need opening <code>&lt;ul&gt;</code> and closing <code>&lt;/ul&gt;</code> tags. This flag helps us know when to add those tags.</p><p><strong>Boolean logic:</strong> <code>False</code> means "not in a list", <code>True</code> means "currently building a list".</p>`,
+      
+      46: `<p><em>Empty line before loop - no explanation needed.</em></p>`,
+      
+      47: `<h3>🔄 for line in lines:</h3><p><strong>What it does:</strong> Loops through each line of text one at a time.</p><p><strong>How for loops work:</strong> Takes each item from <code>lines</code> list and temporarily stores it in the variable <code>line</code>, then runs the indented code below.</p><p><strong>Example:</strong> If lines = ["Hello", "World"], this runs twice: first with line="Hello", then with line="World".</p>`,
+      
+      48: `<h3>✨ line = line.strip()</h3><p><strong>What it does:</strong> Removes whitespace (spaces, tabs, newlines) from both ends of the line.</p><p><strong>Example:</strong> <code>"  Hello  "</code> becomes <code>"Hello"</code></p><p><strong>Why strip?</strong> Makes it easier to detect empty lines and check if lines start with special characters like "-" or "*".</p>`,
+      
+      49: `<p><em>Empty line for readability - no explanation needed.</em></p>`,
+      
+      50: `<h3>❓ if not line:</h3><p><strong>What it does:</strong> Checks if the line is empty (after stripping whitespace).</p><p><strong>Why check?</strong> Empty lines often indicate paragraph breaks. We handle them specially by closing any open lists.</p>`,
+      
+      51: `<h3>🔚 if in_list:</h3><p><strong>What it does:</strong> If we're currently building a list, this checks whether to close it.</p><p><strong>Logic:</strong> Empty line while in a list = the list is finished, so we add the closing <code>&lt;/ul&gt;</code> tag.</p>`,
+      
+      52: `<h3>➕ formatted_html += "&lt;/ul&gt;"</h3><p><strong>What it does:</strong> Adds the closing list tag to our HTML string.</p><p><strong>The += operator:</strong> Means "add to the end". Same as <code>formatted_html = formatted_html + "&lt;/ul&gt;"</code></p>`,
+      
+      53: `<h3>🏁 in_list = False</h3><p><strong>What it does:</strong> Sets the flag to False because we're no longer in a list.</p><p><strong>State management:</strong> This variable tracks our current state so we know what HTML tags to generate next.</p>`,
+      
+      54: `<h3>⏭️ continue</h3><p><strong>What it does:</strong> Skips the rest of the loop and jumps to the next line.</p><p><strong>Why?</strong> Empty lines don't need any other processing - we've handled them, so move on!</p>`,
+      
+      55: `<p><em>Empty line for readability - no explanation needed.</em></p>`,
+      
+      56: `<h3>🎯 if line.startswith('**') and line.endswith('**'):</h3><p><strong>What it does:</strong> Checks if the line is surrounded by double asterisks (Markdown heading format).</p><p><strong>Example:</strong> <code>**Introduction**</code> would match this condition.</p><p><strong>Why check both?</strong> We want lines that START **and** END with ** to be headings. Just one side isn't enough!</p>`,
+      
+      57: `<h3>📰 formatted_html += f"&lt;h3&gt;{line.strip('*')}&lt;/h3&gt;"</h3><p><strong>What it does:</strong> Converts the line into an HTML heading by wrapping it in <code>&lt;h3&gt;</code> tags.</p><p><strong>strip('*'):</strong> Removes all asterisks from the line.</p><p><strong>f-string magic:</strong> The <code>f</code> before the quotes means we can insert variables with <code>{}</code>. Very convenient!</p><p><strong>Example:</strong> <code>**Hello**</code> becomes <code>&lt;h3&gt;Hello&lt;/h3&gt;</code></p>`,
+      
+      58: `<h3>📋 elif line.startswith('- ') or line.startswith('* '):</h3><p><strong>What it does:</strong> Checks if the line is a bullet point (starts with "- " or "* ").</p><p><strong>elif = "else if":</strong> Only checks this condition if the previous <code>if</code> was False.</p><p><strong>Why "or"?</strong> Both "- item" and "* item" are common bullet point formats in Markdown, so we accept both!</p>`,
+      
+      59: `<h3>🔓 if not in_list:</h3><p><strong>What it does:</strong> If this is the FIRST bullet point in a new list, we need to open the list.</p><p><strong>Logic:</strong> <code>in_list</code> is False, so we haven't started a list yet. Time to add <code>&lt;ul&gt;</code>!</p>`,
+      
+      60: `<h3>🎬 formatted_html += "&lt;ul&gt;"</h3><p><strong>What it does:</strong> Adds the opening tag for an unordered (bullet) list.</p><p><strong>HTML structure:</strong> <code>&lt;ul&gt;</code> opens the list, then we'll add <code>&lt;li&gt;</code> items, then close with <code>&lt;/ul&gt;</code>.</p>`,
+      
+      61: `<h3>✅ in_list = True</h3><p><strong>What it does:</strong> Updates our flag to remember that we're now inside a list.</p><p><strong>Why important?</strong> For the NEXT bullet point, <code>in_list</code> will be True, so we won't add another <code>&lt;ul&gt;</code> tag!</p>`,
+      
+      62: `<h3>🔹 formatted_html += f"&lt;li&gt;{line[2:]}&lt;/li&gt;"</h3><p><strong>What it does:</strong> Adds this line as a list item, wrapped in <code>&lt;li&gt;</code> tags.</p><p><strong>line[2:]:</strong> Slicing! Takes everything from position 2 onward. This removes the "- " or "* " at the beginning.</p><p><strong>Example:</strong> <code>"- Hello"</code> becomes <code>&lt;li&gt;Hello&lt;/li&gt;</code></p>`,
+      
+      63: `<h3>📄 else:</h3><p><strong>What it does:</strong> Handles lines that aren't headings or bullet points - regular paragraph text!</p><p><strong>else clause:</strong> Catches everything that didn't match the previous conditions.</p>`,
+      
+      64: `<h3>🔐 if in_list:</h3><p><strong>What it does:</strong> Before starting a new paragraph, check if we need to close an open list.</p><p><strong>Why?</strong> If we were in a list and now we hit regular text, the list is over. Close it!</p>`,
+      
+      65: `<h3>🔚 formatted_html += "&lt;/ul&gt;"</h3><p><strong>What it does:</strong> Adds the closing list tag.</p>`,
+      
+      66: `<h3>🏁 in_list = False</h3><p><strong>What it does:</strong> Marks that we're no longer in a list.</p>`,
+      
+      67: `<h3>📝 formatted_html += f"&lt;p&gt;{line}&lt;/p&gt;"</h3><p><strong>What it does:</strong> Wraps the line in paragraph tags.</p><p><strong>Result:</strong> Regular text becomes proper HTML paragraphs that display nicely in browsers.</p>`,
+      
+      68: `<p><em>Empty line for readability - no explanation needed.</em></p>`,
+      
+      69: `<h3>🔚 if in_list:</h3><p><strong>What it does:</strong> After the loop ends, checks one last time if we need to close a list.</p><p><strong>Why necessary?</strong> If the text ends with bullet points, we might exit the loop while still in_list=True. This ensures we add the closing <code>&lt;/ul&gt;</code>!</p>`,
+      
+      70: `<h3>➕ formatted_html += "&lt;/ul&gt;"</h3><p><strong>What it does:</strong> Adds the final closing list tag if needed.</p>`,
+      
+      71: `<p><em>Empty line before return - no explanation needed.</em></p>`,
+      
+      72: `<h3>↩️ return formatted_html</h3><p><strong>What it does:</strong> Returns the complete HTML string we've built up.</p><p><strong>Result:</strong> The caller gets beautifully formatted HTML that's ready to display in a browser!</p>`,
+      
+      73: `<p><em>Empty line between functions - no explanation needed.</em></p>`,
+      
+      74: `<h3>🌐 def call_gemini_api(messages):</h3><p><strong>What it does:</strong> Defines the function that actually communicates with Google's Gemini AI.</p><p><strong>Parameter:</strong> <code>messages</code> - a list of conversation history (all previous messages between user and AI).</p><p><strong>Why pass history?</strong> So the AI remembers the context of the conversation! Without history, it would forget everything from previous messages.</p>`,
+      
+      75: `<h3>📖 """Calls the Gemini API with retry logic for reliability"""</h3><p><strong>What it does:</strong> Docstring explaining this function.</p><p><strong>"Retry logic":</strong> If the API fails, we automatically try again (up to 3 times). Makes the app more reliable!</p>`,
+      
+      76: `<h3>🛡️ if not GEMINI_API_KEY:</h3><p><strong>What it does:</strong> Safety check - if there's no API key, don't even try to call the API.</p><p><strong>Why check again?</strong> Even though we checked earlier, it's good to be extra safe in critical functions!</p>`,
+      
+      77: `<h3>❌ return "API key is missing. Please check your .env file.", []</h3><p><strong>What it does:</strong> Returns an error message and an empty list.</p><p><strong>Two return values!</strong> Python functions can return multiple values as a tuple. Here: (error_message, empty_list).</p><p><strong>Why empty list?</strong> The caller expects two values, so we must return two things even in error cases.</p>`,
+      
+      78: `<p><em>Empty line for readability - no explanation needed.</em></p>`,
+      
+      79: `<h3>🔗 url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"</h3><p><strong>What it does:</strong> Builds the complete URL for the Gemini API endpoint.</p><p><strong>Breaking it down:</strong><ul><li>Base URL: Google's API server</li><li><code>{GEMINI_MODEL}</code>: Inserts our model name</li><li><code>:generateContent</code>: The specific API action</li></ul></p><p><strong>Result:</strong> A URL like <code>https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-preview-0925:generateContent</code></p>`,
+      
+      80: `<h3>📋 headers = {"Content-Type": "application/json"}</h3><p><strong>What it does:</strong> Creates HTTP headers to send with our request.</p><p><strong>Content-Type header:</strong> Tells the API "I'm sending you JSON data". This is required by most modern APIs.</p><p><strong>Why needed?</strong> The server needs to know what format your data is in so it can parse it correctly!</p>`,
+      
+      81: `<p><em>Empty line for readability - no explanation needed.</em></p>`,
+      
+      82: `<h3>📦 contents = []</h3><p><strong>What it does:</strong> Creates an empty list that will hold formatted messages for the API.</p><p><strong>Why reformat?</strong> Our internal message format is different from what Gemini expects. We need to convert!</p>`,
+      
+      83: `<h3>🔄 for msg in messages:</h3><p><strong>What it does:</strong> Loops through each message in the conversation history.</p><p><strong>What's in messages?</strong> Each <code>msg</code> looks like: <code>{"role": "user", "content": "Hello!"}</code></p>`,
+      
+      84: `<h3>➕ contents.append({...})</h3><p><strong>What it does:</strong> Converts each message to Gemini's format and adds it to the <code>contents</code> list.</p><p><strong>Format conversion:</strong><ul><li>Our "user" → Gemini's "user"</li><li>Our "assistant" → Gemini's "model"</li></ul></p><p><strong>Why "parts"?</strong> Gemini's format allows multiple content parts (text, images, etc.), so it's always a list.</p>`,
+      
+      85: `<h3>🔑 "role": "user" if msg["role"] == "user" else "model"</h3><p><strong>What it does:</strong> Ternary operator - a compact if/else statement in one line.</p><p><strong>Reads as:</strong> If the message role is "user", keep it as "user", otherwise change it to "model".</p><p><strong>Why "model"?</strong> Gemini calls AI responses "model" instead of "assistant".</p>`,
+      
+      86: `<h3>💬 "parts": [{"text": msg["content"]}]</h3><p><strong>What it does:</strong> Wraps the message text in Gemini's required structure.</p><p><strong>The structure:</strong> <code>parts</code> is always a list (array), even for single text messages.</p>`,
+      
+      87: `<p><em>Closing the loop - no explanation needed.</em></p>`,
+      
+      88: `<p><em>Empty line for readability - no explanation needed.</em></p>`,
+      
+      89: `<h3>📤 payload = {...}</h3><p><strong>What it does:</strong> Creates the complete data package to send to Gemini.</p><p><strong>What's inside:</strong><ul><li><code>contents</code>: The conversation history</li><li><code>systemInstruction</code>: The AI's personality/rules</li></ul></p><p><strong>Dictionary structure:</strong> This will be converted to JSON automatically by the requests library.</p>`,
+      
+      90: `<h3>📝 "contents": contents</h3><p><strong>What it does:</strong> Includes the formatted conversation history in the payload.</p>`,
+      
+      91: `<h3>🧠 "systemInstruction": {"parts": [{"text": SCHOOL_INTERNAL_DATA_INSTRUCTION}]}</h3><p><strong>What it does:</strong> Sends the system instruction (the AI's training) with every request.</p><p><strong>Why every time?</strong> Gemini doesn't remember anything between API calls, so we must send the full context each time!</p>`,
+      
+      92: `<p><em>Closing payload dictionary - no explanation needed.</em></p>`,
+      
+      93: `<p><em>Empty line before retry loop - no explanation needed.</em></p>`,
+      
+      94: `<h3>🔁 for attempt in range(3):</h3><p><strong>What it does:</strong> Tries the API call up to 3 times.</p><p><strong>range(3):</strong> Creates [0, 1, 2], so the loop runs 3 times with attempt=0, then 1, then 2.</p><p><strong>Why retry?</strong> Networks are unreliable! Sometimes requests fail due to temporary issues. Retrying often succeeds!</p>`,
+      
+      95: `<h3>🛡️ try:</h3><p><strong>What it does:</strong> Starts a try-except block for error handling.</p><p><strong>Purpose:</strong> If any code inside the <code>try</code> block crashes, Python catches the error instead of killing your program!</p>`,
+      
+      96: `<h3>📡 response = requests.post(...)</h3><p><strong>What it does:</strong> Makes the actual HTTP POST request to Gemini!</p><p><strong>POST vs GET:</strong> POST is used to send data to servers (unlike GET which just retrieves data).</p><p><strong>Parameters:</strong><ul><li>URL with API key appended</li><li>headers: Content-Type</li><li>json: Our payload (auto-converted to JSON)</li><li>timeout=30: Give up after 30 seconds</li></ul></p>`,
+      
+      97: `<p><em>Empty line for readability - no explanation needed.</em></p>`,
+      
+      98: `<h3>✅ if response.status_code == 200:</h3><p><strong>What it does:</strong> Checks if the API call was successful.</p><p><strong>HTTP 200:</strong> The standard "success" code. Means "OK, I processed your request successfully!"</p><p><strong>Other codes:</strong> 404 = not found, 500 = server error, 429 = too many requests (rate limit)</p>`,
+      
+      99: `<h3>📥 data = response.json()</h3><p><strong>What it does:</strong> Converts the JSON response from Gemini into a Python dictionary.</p><p><strong>Why .json()?</strong> The response is raw text in JSON format. This method parses it into a usable Python object!</p>`,
+      
+      100: `<h3>🔍 if "candidates" in data and len(data["candidates"]) > 0:</h3><p><strong>What it does:</strong> Safety check - makes sure Gemini actually returned results.</p><p><strong>Why check?</strong> Sometimes the API returns success but with no content (maybe the input triggered safety filters).</p><p><strong>Double check:</strong> Verifies both that "candidates" exists AND it's not empty.</p>`,
+      
+      101: `<h3>📝 reply_text = data["candidates"][0]["content"]["parts"][0]["text"]</h3><p><strong>What it does:</strong> Extracts the AI's actual text response from the nested JSON structure.</p><p><strong>Breaking down the path:</strong><ul><li><code>candidates[0]</code>: First result</li><li><code>content</code>: The response content</li><li><code>parts[0]</code>: First part (usually text)</li><li><code>text</code>: The actual text string</li></ul></p>`,
+      
+      102: `<h3>↩️ return reply_text, contents</h3><p><strong>What it does:</strong> Returns both the AI's response and the updated conversation history.</p><p><strong>Why both?</strong> The caller needs the text to display, and the history to store for the next message!</p>`,
+      
+      103: `<h3>⚠️ return "No response generated.", contents</h3><p><strong>What it does:</strong> Fallback if Gemini returned success but no actual content.</p>`,
+      
+      104: `<h3>🚦 elif response.status_code == 429:</h3><p><strong>What it does:</strong> Handles rate limiting (too many requests).</p><p><strong>HTTP 429:</strong> Means "slow down! You're making too many requests too quickly."</p>`,
+      
+      105: `<h3>⏱️ time.sleep(2 ** attempt)</h3><p><strong>What it does:</strong> Waits before retrying, using exponential backoff.</p><p><strong>Exponential backoff:</strong><ul><li>Attempt 0: wait 2^0 = 1 second</li><li>Attempt 1: wait 2^1 = 2 seconds</li><li>Attempt 2: wait 2^2 = 4 seconds</li></ul></p><p><strong>Why this pattern?</strong> Gives the server time to recover, and prevents hammering it with rapid retries!</p>`,
+      
+      106: `<h3>⏭️ continue</h3><p><strong>What it does:</strong> Skips to the next iteration of the retry loop.</p><p><strong>Effect:</strong> Tries the API call again after waiting.</p>`,
+      
+      107: `<h3>❌ else:</h3><p><strong>What it does:</strong> Handles any other HTTP error codes.</p>`,
+      
+      108: `<h3>🚫 return f"API error: {response.status_code}", contents</h3><p><strong>What it does:</strong> Returns an error message with the specific error code.</p><p><strong>Example:</strong> "API error: 500" or "API error: 404"</p>`,
+      
+      109: `<h3>⚠️ except Exception as e:</h3><p><strong>What it does:</strong> Catches ANY error that occurred in the try block.</p><p><strong>Exception:</strong> The base error class in Python - catches all error types.</p><p><strong>as e:</strong> Stores the error object in variable <code>e</code> so we can examine it.</p>`,
+      
+      110: `<h3>🔄 if attempt < 2:</h3><p><strong>What it does:</strong> If this isn't the last attempt (0 or 1), wait and retry.</p><p><strong>Why < 2?</strong> Because attempt goes 0, 1, 2. If attempt is 2 (the third try), don't wait - just return the error.</p>`,
+      
+      111: `<h3>⏱️ time.sleep(1)</h3><p><strong>What it does:</strong> Waits 1 second before retrying.</p><p><strong>Why wait?</strong> Network errors are often temporary. A brief pause often fixes the issue!</p>`,
+      
+      112: `<h3>❌ else:</h3><p><strong>What it does:</strong> This is the final attempt - no more retries left.</p>`,
+      
+      113: `<h3>🚨 return f"Error: {str(e)}", contents</h3><p><strong>What it does:</strong> Returns the error message after all retries failed.</p><p><strong>str(e):</strong> Converts the error object to a readable string like "Connection timeout" or "Network unreachable".</p>`,
+      
+      114: `<p><em>Empty line after try-except - no explanation needed.</em></p>`,
+      
+      115: `<h3>💔 return "Failed after 3 attempts.", contents</h3><p><strong>What it does:</strong> Final fallback if all 3 attempts failed for any reason.</p><p><strong>Safety net:</strong> Ensures the function ALWAYS returns something, never crashes!</p>`,
+      
+      116: `<p><em>Empty line between functions - no explanation needed.</em></p>`,
+      
+      117: `<h3>🏠 @app.route('/')</h3><p><strong>What it does:</strong> This is a decorator that tells Flask "when someone visits the homepage (/)," run the function below".</p><p><strong>@ symbol:</strong> Indicates a decorator - a special Python feature that modifies how functions work.</p><p><strong>Route:</strong> A URL path. "/" means the root/homepage of your website.</p>`,
+      
+      118: `<h3>🎯 def home():</h3><p><strong>What it does:</strong> Defines the function that handles homepage visits.</p><p><strong>Function name:</strong> Can be anything, but "home" is conventional for the main page.</p>`,
+      
+      119: `<h3>🆔 session_id = str(uuid4())</h3><p><strong>What it does:</strong> Generates a unique ID for this user's session.</p><p><strong>uuid4():</strong> Creates a random UUID like "a3f5b2c1-d4e6-7890-abcd-ef1234567890".</p><p><strong>str():</strong> Converts it from a UUID object to a regular string.</p>`,
+      
+      120: `<h3>📄 return render_template('index.html', session_id=session_id)</h3><p><strong>What it does:</strong> Sends the HTML page to the user's browser.</p><p><strong>render_template:</strong> Flask function that loads an HTML file from the "templates" folder.</p><p><strong>session_id=session_id:</strong> Passes the session ID to the HTML so JavaScript can use it.</p>`,
+      
+      121: `<p><em>Empty line between routes - no explanation needed.</em></p>`,
+      
+      122: `<h3>💬 @app.route('/chat', methods=['POST'])</h3><p><strong>What it does:</strong> Creates an API endpoint at /chat that accepts POST requests.</p><p><strong>methods=['POST']:</strong> Only accepts POST (not GET). Perfect for APIs that receive data!</p><p><strong>Why /chat?</strong> JavaScript will send user messages here to get AI responses.</p>`,
+      
+      123: `<h3>🎯 def chat():</h3><p><strong>What it does:</strong> Defines the main chat logic function.</p>`,
+      
+      124: `<h3>📥 data = request.get_json()</h3><p><strong>What it does:</strong> Gets the JSON data sent by the user's browser.</p><p><strong>request object:</strong> Flask automatically fills this with incoming request data.</p><p><strong>get_json():</strong> Parses the JSON body into a Python dictionary.</p>`,
+      
+      125: `<h3>💬 user_message = data.get('message', '').strip()</h3><p><strong>What it does:</strong> Extracts the user's message from the data.</p><p><strong>.get('message', ''):</strong> Safe way to access dictionary - returns empty string if 'message' key doesn't exist.</p><p><strong>.strip():</strong> Removes extra whitespace from start and end.</p>`,
+      
+      126: `<h3>🆔 session_id = data.get('session_id', 'default')</h3><p><strong>What it does:</strong> Gets the session ID, or uses 'default' as fallback.</p><p><strong>Why fallback?</strong> Safety! If JavaScript somehow doesn't send a session_id, we don't crash.</p>`,
+      
+      127: `<p><em>Empty line for readability - no explanation needed.</em></p>`,
+      
+      128: `<h3>🛡️ if not user_message:</h3><p><strong>What it does:</strong> Validates that the user actually sent a message.</p><p><strong>Why check?</strong> Don't want to call the expensive Gemini API with empty input!</p>`,
+      
+      129: `<h3>❌ return jsonify({'error': 'Message is required'}), 400</h3><p><strong>What it does:</strong> Returns an error response with HTTP status code 400.</p><p><strong>jsonify():</strong> Converts dictionary to JSON format.</p><p><strong>400 code:</strong> "Bad Request" - means the client sent invalid data.</p>`,
+      
+      130: `<p><em>Empty line for readability - no explanation needed.</em></p>`,
+      
+      131: `<h3>📝 if session_id not in conversations:</h3><p><strong>What it does:</strong> Checks if this is a new session (first message from this user).</p><p><strong>Why check?</strong> Need to initialize an empty conversation history for new users!</p>`,
+      
+      132: `<h3>🆕 conversations[session_id] = []</h3><p><strong>What it does:</strong> Creates an empty list for this session's messages.</p><p><strong>Dictionary assignment:</strong> Adds a new key-value pair to the <code>conversations</code> dictionary.</p><p><strong>Result:</strong> Now <code>conversations["abc-123"] = []</code> and we can add messages to it!</p>`,
+      
+      133: `<p><em>Empty line for readability - no explanation needed.</em></p>`,
+      
+      134: `<h3>➕ conversations[session_id].append({"role": "user", "content": user_message})</h3><p><strong>What it does:</strong> Adds the user's message to their conversation history.</p><p><strong>append():</strong> List method that adds an item to the end.</p><p><strong>Message format:</strong> Dictionary with "role" (who said it) and "content" (what they said).</p><p><strong>Why save?</strong> So the AI remembers what was said earlier in the conversation!</p>`,
+      
+      135: `<p><em>Empty line for readability - no explanation needed.</em></p>`,
+      
+      136: `<h3>🤖 reply_text, updated_history = call_gemini_api(conversations[session_id])</h3><p><strong>What it does:</strong> Calls our Gemini API function with the full conversation history.</p><p><strong>Two return values:</strong> The function returns both the AI's reply and the updated message list.</p><p><strong>Why pass full history?</strong> So Gemini can see all previous messages and give contextual responses!</p>`,
+      
+      137: `<p><em>Empty line for readability - no explanation needed.</em></p>`,
+      
+      138: `<h3>💾 conversations[session_id].append({"role": "assistant", "content": reply_text})</h3><p><strong>What it does:</strong> Saves the AI's response to the conversation history.</p><p><strong>Why "assistant"?</strong> Distinguishes AI messages from user messages in our internal format.</p><p><strong>Building history:</strong> Now the next message will include both what the user said AND what the AI replied!</p>`,
+      
+      139: `<p><em>Empty line for readability - no explanation needed.</em></p>`,
+      
+      140: `<h3>✨ formatted_reply = format_response(reply_text)</h3><p><strong>What it does:</strong> Converts the plain text AI response into beautiful HTML.</p><p><strong>Function call:</strong> Uses our <code>format_response()</code> function defined earlier.</p><p><strong>Result:</strong> Plain text with "** Heading **" becomes HTML with <code>&lt;h3&gt;</code> tags, bullet points become <code>&lt;ul&gt;&lt;li&gt;</code>, etc.</p>`,
+      
+      141: `<p><em>Empty line for readability - no explanation needed.</em></p>`,
+      
+      142: `<h3>↩️ return jsonify({'reply': formatted_reply})</h3><p><strong>What it does:</strong> Sends the formatted response back to the user's browser as JSON.</p><p><strong>JSON structure:</strong> <code>{"reply": "&lt;h3&gt;Hello&lt;/h3&gt;&lt;p&gt;How can I help?&lt;/p&gt;"}</code></p><p><strong>Why JSON?</strong> JavaScript can easily parse JSON and insert the HTML into the page!</p>`,
+      
+      143: `<p><em>Empty line between routes - no explanation needed.</em></p>`,
+      
+      144: `<h3>🔄 @app.route('/reset', methods=['POST'])</h3><p><strong>What it does:</strong> Creates an API endpoint to clear a user's conversation history.</p><p><strong>Use case:</strong> When the user clicks "New Conversation" button, JavaScript calls this endpoint.</p>`,
+      
+      145: `<h3>🎯 def reset():</h3><p><strong>What it does:</strong> Defines the reset conversation function.</p>`,
+      
+      146: `<h3>📥 data = request.get_json()</h3><p><strong>What it does:</strong> Gets the JSON data from the reset request.</p><p><strong>Expected data:</strong> Should contain the session_id to reset.</p>`,
+      
+      147: `<h3>🆔 session_id = data.get('session_id', 'default')</h3><p><strong>What it does:</strong> Extracts which session to reset.</p>`,
+      
+      148: `<p><em>Empty line for readability - no explanation needed.</em></p>`,
+      
+      149: `<h3>🗑️ if session_id in conversations:</h3><p><strong>What it does:</strong> Checks if this session exists before trying to clear it.</p><p><strong>Safety check:</strong> Prevents errors if trying to reset a non-existent session.</p>`,
+      
+      150: `<h3>🧹 conversations[session_id] = []</h3><p><strong>What it does:</strong> Clears all messages by replacing the list with an empty one.</p><p><strong>Effect:</strong> The conversation starts fresh as if the user never sent any messages!</p>`,
+      
+      151: `<p><em>Empty line for readability - no explanation needed.</em></p>`,
+      
+      152: `<h3>✅ return jsonify({'status': 'success', 'message': 'Conversation reset'})</h3><p><strong>What it does:</strong> Sends a success response back to the browser.</p><p><strong>JSON response:</strong> Contains both a status flag and a human-readable message.</p><p><strong>JavaScript uses this:</strong> To show a confirmation message or update the UI.</p>`,
+      
+      153: `<p><em>Empty line before main execution block - no explanation needed.</em></p>`,
+      
+      154: `<h3>🚀 if __name__ == '__main__':</h3><p><strong>What it does:</strong> Checks if this file is being run directly (not imported as a module).</p><p><strong>__name__ variable:</strong> Special Python variable that's set to "__main__" when running the file directly.</p><p><strong>Why check?</strong> If someone imports this file into another Python file, we don't want the server to start automatically. Only start when running this file directly!</p><p><strong>Best practice:</strong> Almost every Python script uses this pattern!</p>`,
+      
+      155: `<h3>⚡ app.run(debug=True, port=5000)</h3><p><strong>What it does:</strong> Starts the Flask development server!</p><p><strong>Breaking it down:</strong></p><ul><li><code>debug=True</code> - Enables debug mode. Shows detailed errors and auto-reloads when you change code. NEVER use in production!</li><li><code>port=5000</code> - Server runs on port 5000, so you visit http://localhost:5000</li></ul><p><strong>What happens:</strong> Flask starts listening for incoming web requests. Your chatbot is now live and accessible in your browser!</p><p><strong>To stop:</strong> Press Ctrl+C in the terminal.</p><p><strong>🎉 Congratulations! You now understand every single line of a production-ready Flask + Gemini AI chatbot!</strong></p>`,
+    };
+
+    const sectionMap = {
+      imports: 1,
+      dotenv: 9,
+      app: 11,
+      config: 13,
+      instruction: 19,
+      storage: 36,
+      formatting: 38,
+      api: 74,
+      routes: 117,
+      run: 154
+    };
+
+    function showExplanation(n) {
+      document.querySelectorAll('.line').forEach(el => el.classList.remove('highlighted'));
+      const line = document.querySelector(`.line[data-line="${n}"]`);
+      if (line) {
+        line.classList.add('highlighted');
+        line.scrollIntoView({behavior: 'smooth', block: 'center'});
+      }
+      const explanation = explanations[n] || `<p><strong>Line ${n}</strong><br><br>This line is part of the code structure. Click on nearby lines with detailed explanations to learn more about this section!</p>`;
+      document.getElementById('explainText').innerHTML = explanation;
+    }
+
+    codeblock.addEventListener('click', e => {
+      const line = e.target.closest('.line');
+      if (line) showExplanation(parseInt(line.dataset.line));
+    });
+
+    document.querySelectorAll('.nav button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        showExplanation(sectionMap[btn.dataset.target]);
+      });
+    });
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    showExplanation(1);
+  </script>
+</body>
+</html>
+      
+      
