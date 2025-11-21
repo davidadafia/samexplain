@@ -37,6 +37,103 @@
     .footer{padding:16px;text-align:center;color:var(--muted);font-size:13px}
     @media(max-width:1200px){.container{grid-template-columns:250px 1fr}}
     @media(max-width:900px){.container{grid-template-columns:1fr;padding:16px}.sidebar,.explain-panel{display:none}}
+    .tech-content ul {
+    margin: 10px 0 30px 30px;
+    line-height: 1.6;
+  }
+  .tech-content p > strong {
+    font-size: 1.25em/1.6;
+    color: white;
+  }
+  .selector-wrapper {
+    text-align: left;
+    max-width: 800px;
+    margin: 0 auto 40px auto;
+  }
+
+
+  .it-questions-wrapper { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+.it-main-heading {
+  text-align: center;
+  font-size: 28px;
+  background: linear-gradient(90deg, #5cc8ff, #a78bff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 16px;
+}
+.it-intro {
+  text-align: center;
+  color: var(--muted);
+  font-size: 16px;
+  max-width: 800px;
+  margin: 0 auto 50px auto;
+}
+.it-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.it-card {
+  background: var(--panel);
+  border-radius: var(--radius);
+  padding: 24px;
+  border: 1px solid rgba(255,255,255,0.04);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  transition: all 0.3s ease;
+}
+.it-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(92,200,255,0.15);
+  border-color: rgba(92,200,255,0.2);
+}
+.it-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.it-icon {
+  font-size: 28px;
+}
+.it-card-header h3 {
+  font-size: 18px;
+  color: #dff5ff;
+  margin: 0;
+}
+.it-card ul {
+  margin: 0;
+  padding-left: 20px;
+  line-height: 1.7;
+}
+.it-card li {
+  color: #c8d7ff;
+  margin-bottom: 10px;
+  position: relative;
+}
+.it-card li:before {
+  content: "→";
+  color: var(--accent);
+  position: absolute;
+  left: -18px;
+}
+.it-card.optional {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, rgba(92,200,255,0.08), rgba(167,139,255,0.06));
+  border: 1px dashed rgba(92,200,255,0.3);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .it-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 0 10px;
+  }
+  .it-main-heading { font-size: 24px; }
+}
   </style>
 </head>
 <body>
@@ -45,10 +142,26 @@
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="6" fill="white" fill-opacity="0.08"/></svg>
     </div>
     <div class="brand">
-      <h1>School Chatbot Explained</h1>
-      <p>Every meaningful line explained in detail</p>
+      <h1>Samantha's School Chatbot Project</h1>
+      <p>Code Explainer - IT Team Qestions/p>
     </div>
   </header>
+
+
+<!-- Dropdown + Technical Sections -->
+<div class="tech-sections-wrapper">
+
+  <!-- Dropdown Selector -->
+  <div class="selector-wrapper" style="margin-bottom: 30px;">
+    <label for="techView" style="font-weight: bold; margin-right: 15px;">View:</label>
+    <select id="techView" onchange="switchTechView()" style="padding: 8px 12px; font-size: 16px; border-radius: 6px; border: 1px solid #ccc;">
+      <option value="backend">Backend Explainer</option>
+      <option value="itquestions">IT Questions for Handover</option>
+    </select>
+  </div>
+
+
+  <div id="backend-explainer" class="tech-content">
   <div class="container">
     <aside class="sidebar">
       <h3>Jump to Section</h3>
@@ -75,6 +188,152 @@
     </aside>
   </div>
   <div class="footer">Line-by-Line Interactive Explainer for school chatbot. All The Best.</div>
+
+</div>
+
+
+  <!-- IT Questions Section (hidden by default) -->
+<div id="itquestions" class="tech-content" style="display: none; padding: 40px 20px; max-width: 1400px; margin: 0 auto;">
+  <div class="it-questions-wrapper">
+    <h2 class="it-main-heading">Handover Checklist: Key Questions for the School’s IT Team</h2>
+    <p class="it-intro">Ensure a smooth transition by discussing these critical topics before final handover.</p>
+
+    <div class="it-grid">
+      <!-- Category 1 -->
+      <div class="it-card">
+        <div class="it-card-header">
+          <span class="it-icon">🖥️</span>
+          <h3>Hosting & Deployment</h3>
+        </div>
+        <ul>
+          <li>Should the chatbot remain on Heroku or migrate to your internal servers?</li>
+          <li>If migrating, which platform/environment do you prefer (Heroku, AWS, Azure, on-premise, etc.)?</li>
+          <li>Who will own deployment and updates going forward?</li>
+          <li>Do you need full Heroku deployment documentation?</li>
+          <li>Is there a fallback hosting plan in case of downtime?</li>
+        </ul>
+      </div>
+
+      <!-- Category 2 -->
+      <div class="it-card">
+        <div class="it-card-header">
+          <span class="it-icon">🔐</span>
+          <h3>Security & API Keys</h3>
+        </div>
+        <ul>
+          <li>How will the Gemini API key be stored and rotated?</li>
+          <li>Who should have access to secrets and environment variables?</li>
+          <li>Do you need training on secure Config Vars (Heroku) or secret management?</li>
+        </ul>
+      </div>
+
+      <!-- Category 3 -->
+      <div class="it-card">
+        <div class="it-card-header">
+          <span class="it-icon">👥</span>
+          <h3>Code Ownership & Maintenance</h3>
+        </div>
+        <ul>
+          <li>Who will be responsible for ongoing code maintenance?</li>
+          <li>Is there internal Python/Flask expertise available?</li>
+          <li>What is your preferred version control and release strategy?</li>
+        </ul>
+      </div>
+
+      
+
+      <!-- Category 5 -->
+      <div class="it-card">
+        <div class="it-card-header">
+          <span class="it-icon">🔗</span>
+          <h3>School System Integration</h3>
+        </div>
+        <ul>
+          <li>Should the chatbot connect to the MIS, portal, or other internal systems?</li>
+          <li>Are there existing APIs we should integrate with?</li>
+          <li>Do you require authentication (staff/student login)?</li>
+          <li>Do you need rollback procedures documented?</li>
+          <li>Any budget allocated for ongoing hosting/AI costs?</li>
+        </ul>
+      </div>
+
+      <!-- Category 6 -->
+      <div class="it-card">
+        <div class="it-card-header">
+          <span class="it-icon">📈</span>
+          <h3>Performance & Scalability</h3>
+        </div>
+        <ul>
+          <li>What is the expected peak concurrent user count?</li>
+          <li>Do we need to upgrade hosting tier or Gemini plan?</li>
+          <li>Should rate-limiting or queuing be implemented?</li>
+        </ul>
+      </div>
+
+      <!-- Category 7 -->
+      <div class="it-card">
+        <div class="it-card-header">
+          <span class="it-icon">📋</span>
+          <h3>Documentation & Training</h3>
+        </div>
+        <ul>
+          <li>What level of documentation is required (user guide, technical docs, architecture diagram)?</li>
+          <li>Would you like a live training/handover session for the IT team?</li>
+          <li>How will future updates and bug fixes be managed?</li>
+        </ul>
+      </div>
+
+      <!-- Category 8 -->
+      <div class="it-card">
+        <div class="it-card-header">
+          <span class="it-icon">📊</span>
+          <h3>Monitoring & Analytics</h3>
+        </div>
+        <ul>
+          <li>Who will monitor application logs and performance?</li>
+          <li>Do you need training on logs retrival</li>
+        </ul>
+      </div>
+
+      <!-- Category 9 -->
+      <div class="it-card">
+        <div class="it-card-header">
+          <span class="it-icon">🚀</span>
+          <h3>Future Development</h3>
+        </div>
+        <ul>
+          <li>Are new features planned (voice, multilingual, etc.)?</li>
+          <li>Do you want flexibility to switch AI providers later?</li>
+        </ul>
+      </div>
+
+      <!-- Optional -->
+      <div class="it-card optional">
+        <div class="it-card-header">
+          <span class="it-icon">➤</span>
+          <h3>Note</h3>
+        </div>
+        <ul>
+          <li>Conversations are not stored for privacy reasons</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchTechView() {
+  const value = document.getElementById("techView").value;
+  document.getElementById("backend-explainer").style.display = (value === "backend") ? "block" : "none";
+  document.getElementById("itquestions").style.display = (value === "itquestions") ? "block" : "none";
+}
+
+// Set default view (Backend Explainer shows first)
+window.onload = function() {
+  switchTechView();
+};
+</script>
+
   <script>
     const fullSource = `import time
 from flask import Flask, render_template, request, jsonify
