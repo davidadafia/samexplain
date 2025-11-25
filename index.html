@@ -76,6 +76,15 @@
   max-width: 1200px;
   margin: 0 auto;
 }
+
+.it-grids {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
 .it-card {
   background: var(--panel);
   border-radius: var(--radius);
@@ -125,9 +134,44 @@
   border: 1px dashed rgba(92,200,255,0.3);
 }
 
+
+  .code-container {
+    max-width: 1200px;
+    margin: 0 auto; /* centers it */
+  }
+
+  .code-box {
+    position: relative;
+    background: #1e1e1e;
+    color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    font-family: monospace;
+    overflow-x: auto;
+    white-space: pre; /* keep formatting */
+  }
+
+  .copy-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #00ffff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+  }
+
 /* Responsive */
 @media (max-width: 900px) {
   .it-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 0 10px;
+  }
+  .it-grids {
     grid-template-columns: 1fr;
     gap: 20px;
     padding: 0 10px;
@@ -157,6 +201,7 @@
     <select id="techView" onchange="switchTechView()" style="padding: 8px 12px; font-size: 16px; border-radius: 6px; border: 1px solid #ccc;">
       <option value="backend">Backend Explainer</option>
       <option value="itquestions">IT Questions for Handover</option>
+      <option value="integ">For IT Team Integration</option>
     </select>
   </div>
 
@@ -321,11 +366,324 @@
   </div>
 </div>
 
+
+  <!-- IT Questions Section (hidden by default) -->
+<div id="integ" class="tech-content" style="display: none; padding: 40px 20px; max-width: 1400px; margin: 0 auto;">
+  <div class="it-questions-wrapper">
+    <h2 class="it-main-heading">Copy and paste these codes to fully integrate with LCS website</h2>
+    <p class="it-intro"></p>
+
+    <div class="it-grids">
+      <!-- Category 1 -->
+      <div class="it-card">
+        <div class="it-card-header">
+          <span class="it-icon">🖥️</span>
+          <h3>Give this button to the IT Team to paste anywhere on the page the popup is supposed to appear</h3>
+        </div>
+        
+<div class="code-container">
+  <div class="code-box">
+    <button class="copy-btn" onclick="copyCode()">Copy</button>
+
+    <pre id="code-block"><code>
+&lt;button
+  onclick="
+    const w = 400, h = 600;
+    const left = (screen.availWidth || screen.width) - w - 20;
+    const top = (screen.availHeight || screen.height) - h - 40;
+    window.open(
+      'https://schoolchatbot-ef24ed65a956.herokuapp.com/',
+      'Gobella Chat',
+      'width=' + w + ',height=' + h + ',left=' + left + ',top=' + top + ',resizable=yes,scrollbars=yes'
+    )
+  "
+  style="position:fixed;bottom:30px;right:30px;width:70px;height:70px;background:linear-gradient(135deg,#00ffff,#7b68ee);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 30px rgba(0,255,255,0.5);transition:all 0.3s ease;z-index:9999;border:none;padding:0;"
+  onmouseover="this.style.transform='scale(1.15) rotate(10deg)';this.style.boxShadow='0 12px 40px rgba(0,255,255,0.8)';"
+  onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 8px 30px rgba(0,255,255,0.5)';"
+&gt;
+  &lt;svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:40px;height:40px;fill:#000;pointer-events:none;"&gt;
+    &lt;path d="M12 2C11.45 2 11 2.45 11 3V4H7C5.9 4 5 4.9 5 6V18C5 19.1 5.9 20 7 20H17C18.1 20 19 19.1 19 18V6C19 4.9 18.1 4 17 4H13V3C13 2.45 12.55 2 12 2ZM9 9C9.83 9 10.5 9.67 10.5 10.5S9.83 12 9 12 7.5 11.33 7.5 10.5 8.17 9 9 9ZM15 9C15.83 9 16.5 9.67 16.5 10.5S15.83 12 15 12 13.5 11.33 13.5 10.5 14.17 9 15 9ZM8 15H16V16C16 16.55 15.55 17 15 17H9C8.45 17 8 16.55 8 16V15Z"/&gt;
+    &lt;circle cx="12" cy="1" r="1"/&gt;
+  &lt;/svg&gt;
+&lt;/button&gt;
+    </code></pre>
+  </div>
+</div>
+      </div>
+    </div>
+<br><br>
+<br><br>
+<div class="it-card-header">
+          <span class="it-icon">🖥️</span>
+          <h3>Replace this with the code in your frontend index.html (in the templates folder)</h3>
+        </div>
+
+    <div class="code-container">
+  <div class="code-box">
+    <button class="copy-btn" onclick="copyCodet()">Copy</button>
+
+    <pre id="code-blockt"><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8" /&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+  &lt;title&gt;Lincoln Community School - Chat&lt;/title&gt;
+  &lt;style&gt;
+    * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: #f2f2f2;
+  min-height: 100vh;
+}
+/* --- ChatGPT-like centered interface --- */
+.chat-wrapper {
+  max-width: 850px;
+  height: 100vh;
+  margin: 0 auto;
+  padding-bottom: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: relative;
+}
+/* Messages area */
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 30px 20px 120px;
+}
+/* ChatGPT message structure */
+.message {
+  display: flex;
+  margin-bottom: 20px;
+}
+.message.bot .message-content {
+  background: #e6eef8;
+  border: 1px solid #cdd8eb;
+  padding: 18px;
+  border-radius: 10px;
+  width: 100%;
+  color: #003366;
+  line-height: 1.5;
+}
+.message.user {
+  justify-content: flex-end;
+}
+.message.user .message-content {
+  background: #003366;
+  color: #ffffff;
+  padding: 14px 18px;
+  border-radius: 12px;
+  max-width: 70%;
+}
+/* --- Input bar like ChatGPT --- */
+.chat-input-bar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 850px;
+  background: white;
+  padding: 12px 15px;
+  border-radius: 14px;
+  display: flex;
+  gap: 10px;
+  border: 1px solid #cdd8eb;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+}
+.chat-input {
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid #cdd8eb;
+  outline: none;
+  font-size: 16px;
+}
+.send-button {
+  background: #FFD700;
+  color: #003366;
+  border: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+.send-button:hover {
+  background: #ffea70;
+  transform: scale(1.1);
+}
+/* Typing indicator */
+.typing-indicator {
+  display: flex;
+  gap: 6px;
+  background: #e6eef8;
+  width: fit-content;
+  padding: 10px 15px;
+  border-radius: 12px;
+  border: 1px solid #cdd8eb;
+}
+.typing-indicator span {
+  width: 10px;
+  height: 10px;
+  background: #003366;
+  border-radius: 50%;
+  animation: typing 1.4s infinite;
+}
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+@keyframes typing {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  30% {
+    transform: translateY(-6px);
+    opacity: 1;
+  }
+}
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class="chat-wrapper" id="chatWrapper"&gt;
+    &lt;div class="chat-messages" id="chatMessages"&gt;
+      &lt;div class="message bot"&gt;
+        &lt;div class="message-content"&gt;
+          Akwaaba! 👋 Welcome to Lincoln Community School🦁. How can I help you today?
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="chat-input-bar"&gt;
+      &lt;input
+        type="text"
+        class="chat-input"
+        id="messageInput"
+        placeholder="Send a message..."
+        onkeypress="handleKeyPress(event)"
+      /&gt;
+      &lt;button class="send-button" onclick="sendMessage()"&gt;➤&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;script&gt;
+    const chatToggle = document.getElementById('chatToggle');
+    const chatContainer = document.getElementById('chatContainer');
+    let sessionId = 'session_' + Math.random().toString(36).substr(2, 9);
+
+    chatToggle.addEventListener('click', () => {
+      chatContainer.style.display =
+        chatContainer.style.display === 'none' || chatContainer.style.display === ''
+          ? 'flex'
+          : 'none';
+    });
+
+    function getTime() {
+      const now = new Date();
+      return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function addMessage(content, isUser) {
+      const messagesContainer = document.getElementById('chatMessages');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+      messageDiv.innerHTML = `
+        &lt;div class="message-content"&gt;
+          ${content}
+          &lt;div class="message-time"&gt;${getTime()}&lt;/div&gt;
+        &lt;/div&gt;
+      `;
+      messagesContainer.appendChild(messageDiv);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+      const messagesContainer = document.getElementById('chatMessages');
+      const typingDiv = document.createElement('div');
+      typingDiv.id = 'typingIndicator';
+      typingDiv.className = 'typing-indicator';
+      typingDiv.innerHTML = '&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;';
+      messagesContainer.appendChild(typingDiv);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function hideTypingIndicator() {
+      const typingIndicator = document.getElementById('typingIndicator');
+      if (typingIndicator) typingIndicator.remove();
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const message = input.value.trim();
+      if (!message) return;
+
+      addMessage(message, true);
+      input.value = '';
+
+      showTypingIndicator();
+
+      try {
+        const response = await fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message, session_id: sessionId }),
+        });
+
+        const data = await response.json();
+        hideTypingIndicator();
+        addMessage(data.response || 'Sorry, an error occurred.', false);
+      } catch (error) {
+        hideTypingIndicator();
+        addMessage('Sorry, could not connect to the server.', false);
+      }
+    }
+
+    function handleKeyPress(event) {
+      if (event.key === 'Enter') sendMessage();
+    }
+
+    async function resetChat() {
+      if (!confirm('Reset conversation?')) return;
+
+      document.getElementById('chatMessages').innerHTML = `
+        &lt;div class="message bot"&gt;
+          &lt;div class="message-content"&gt;
+            Akwaaba! 👋 Welcome to Lincoln Community School. How can I help you today?
+            &lt;div class="message-time"&gt;Just now&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;`;
+
+      sessionId = 'session_' + Math.random().toString(36).substr(2, 9);
+    }
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+  </div>
+</div>
+
+
+
+  </div>
+</div>
+
 <script>
 function switchTechView() {
   const value = document.getElementById("techView").value;
   document.getElementById("backend-explainer").style.display = (value === "backend") ? "block" : "none";
   document.getElementById("itquestions").style.display = (value === "itquestions") ? "block" : "none";
+  document.getElementById("integ").style.display = (value === "integ") ? "block" : "none";
 }
 
 // Set default view (Backend Explainer shows first)
@@ -333,7 +691,23 @@ window.onload = function() {
   switchTechView();
 };
 </script>
+<script>
+  function copyCode() {
+    const code = document.getElementById("code-block").innerText;
+    navigator.clipboard.writeText(code).then(() => {
+      alert("Code copied!");
+    });
+  }
+</script>
 
+<script>
+  function copyCodet() {
+    const code = document.getElementById("code-blockt").innerText;
+    navigator.clipboard.writeText(code).then(() => {
+      alert("Code copied!");
+    });
+  }
+</script>
   <script>
     const fullSource = `import time
 from flask import Flask, render_template, request, jsonify
@@ -848,3 +1222,29 @@ if __name__ == '__main__':
 </html>
       
       
+
+
+
+
+
+<button
+  onclick="
+    const w = 400, h = 600;
+    const left = (screen.availWidth || screen.width) - w - 20;
+    const top = (screen.availHeight || screen.height) - h - 40;
+    window.open(
+      'https://schoolchatbot-ef24ed65a956.herokuapp.com/',
+      'Gobella Chat',
+      'width=' + w + ',height=' + h + ',left=' + left + ',top=' + top + ',resizable=yes,scrollbars=yes'
+    )
+  "
+  style="position:fixed;bottom:30px;right:30px;width:70px;height:70px;background:linear-gradient(135deg,#00ffff,#7b68ee);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 30px rgba(0,255,255,0.5);transition:all 0.3s ease;z-index:9999;border:none;padding:0;"
+  onmouseover="this.style.transform='scale(1.15) rotate(10deg)';this.style.boxShadow='0 12px 40px rgba(0,255,255,0.8)';"
+  onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 8px 30px rgba(0,255,255,0.5)';"
+>
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:40px;height:40px;fill:#000;pointer-events:none;">
+    <path d="M12 2C11.45 2 11 2.45 11 3V4H7C5.9 4 5 4.9 5 6V18C5 19.1 5.9 20 7 20H17C18.1 20 19 19.1 19 18V6C19 4.9 18.1 4 17 4H13V3C13 2.45 12.55 2 12 2ZM9 9C9.83 9 10.5 9.67 10.5 10.5S9.83 12 9 12 7.5 11.33 7.5 10.5 8.17 9 9 9ZM15 9C15.83 9 16.5 9.67 16.5 10.5S15.83 12 15 12 13.5 11.33 13.5 10.5 14.17 9 15 9ZM8 15H16V16C16 16.55 15.55 17 15 17H9C8.45 17 8 16.55 8 16V15Z"/>
+    <circle cx="12" cy="1" r="1"/>
+  </svg>
+</button>
+    
